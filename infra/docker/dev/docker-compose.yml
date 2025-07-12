@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: task-app-postgres
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env.dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+
+
+  mongodb:
+    image: mongo:latest
+    container_name: task-app-mongo
+    ports:
+      - '27017:27017'
+    env_file:
+      - .env.dev
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - backend
+
+
+  app:
+    build:
+      context: .
+    container_name: task-app-dev
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+      - mongodb
+    volumes:
+      - ../../../:/app
+    env_file:
+      - .env.dev
+    networks:
+      - backend
+
+
+volumes:
+  pgdata:
+  mongodata:
+
+
+networks:
+  backend:
