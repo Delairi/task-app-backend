@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  labels:
+    app: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.port }}
+        env:
+        - name: USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.secrets.name }}"
+              key: "{{ .Values.secrets.userKey }}"
+        - name: USER_PWD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.secrets.name }}"
+              key: "{{ .Values.secrets.passwordKey }}"
+        - name: DB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ .Values.configMap.name }}"
+              key: "{{ .Values.configMap.dbUrlKey }}"
+        - name: PORT
+          value: "{{ .Values.port }}"
+        - name: POSTGRES_DB_HOST
+          value: "{{ .Values.postgres.host }}"
+        - name: POSTGRES_DB_PORT
+          value: "{{ .Values.postgres.port }}"
+        - name: POSTGRES_DB_USERNAME
+          value: "{{ .Values.postgres.username }}"
+        - name: POSTGRES_DB_PASSWORD
+          value: "{{ .Values.postgres.password }}"
+        - name: POSTGRES_DB_DATABASE
+          value: "{{ .Values.postgres.database }}"
+        - name: FRONTEND_URL
+          value: "{{ .Values.frontendUrl }}"
+        - name: MONGODB_DATABASE
+          value: "{{ .Values.mongoUrl }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  type: NodePort
+  selector:
+    app: webapp
+  ports:
+    - protocol: TCP
+      port: {{ .Values.port }}
+      targetPort: {{ .Values.port }}
+      nodePort: {{ .Values.nodePort }}

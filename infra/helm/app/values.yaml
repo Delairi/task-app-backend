@@ -1,0 +1,62 @@
+backend:
+  image:
+    repository:
+    tag:
+
+  port:
+  nodePort:
+  secrets:
+    name:
+    userKey:
+    passwordKey:
+
+  configMap:
+    name:
+    dbUrlKey:
+
+  postgres:
+    host:
+    port:
+    username:
+    password:
+    database:
+  frontendUrl:
+  mongoUrl:
+
+frontend:
+  repository:
+  tag:
+  apiUrl:
+  nodePort:
+  port:
+
+mongo:
+  mongoUser:
+  mongoPassword:
+  port:
+  nodePort:
+  secrets:
+    name:
+    userKey:
+    passwordKey:
+
+  configMap:
+    name:
+    dbUrlKey:
+
+portgres:
+  port:
+  nodePort:
+
+  secrets:
+    name:
+    userPassword:
+    userKey:
+    postgresHost:
+    postgresDb:
+    postgresUser:
+    postgresPassword:
+    configMap:
+      name:
+      dbKey:
+    
